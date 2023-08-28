@@ -25,6 +25,7 @@ function App() {
     <AddData fetchData= {fetchData} />
     <DataList 
     data= {data}
+    fetchData= {fetchData}
     />
     </>
   )

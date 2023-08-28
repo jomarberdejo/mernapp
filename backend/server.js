@@ -2,15 +2,14 @@ require('dotenv').config()
 
 const express = require('express')
 const mongoose = require('mongoose')
-const cors = require('cors');
+const cors = require('cors')
 
 // Create a new Express app
 const app = express()
-app.use(cors());
 
 // Middleware
 app.use(express.json())
-
+app.use(cors())
 // Log incoming requests
 app.use((req, res, next) => {
   console.log(req.path, req.method)
@@ -58,5 +57,30 @@ app.post('/api/data', async (req, res) => {
   } catch (error) {
     console.error('Error adding data:', error);
     res.status(500).json({ error: 'An error occurred while adding data' });
+  }
+});
+
+// Create a route to update data in the database
+app.put('/api/data/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+    const updatedItem = await ExampleModel.findByIdAndUpdate(id, { name }, { new: true });
+    res.json(updatedItem);
+  } catch (error) {
+    console.error('Error updating data:', error);
+    res.status(500).json({ error: 'An error occurred while updating data' });
+  }
+});
+
+// Create a route to delete data from the database
+app.delete('/api/data/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await ExampleModel.findByIdAndRemove(id);
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting data:', error);
+    res.status(500).json({ error: 'An error occurred while deleting data' });
   }
 });
