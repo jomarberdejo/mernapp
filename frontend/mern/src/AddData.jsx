@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {useGetUserInfo} from './useGetUserInfo';
 
-function AddData({fetchData}) {
+function AddData({ fetchData }) {
   const [name, setName] = useState('');
-
-  const handleSubmit = async e => {
+  const {userId} = useGetUserInfo()
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:4000/api/data', { name });
+      await axios.post('http://localhost:4000/api/data', {
+        name,
+        userId, // Include the user's ID
+      });
       console.log('Data added successfully');
+      alert(userId)
       fetchData();
+      setName(''); // Clear the input field
     } catch (error) {
       console.error('Error adding data:', error);
     }
@@ -23,7 +29,7 @@ function AddData({fetchData}) {
           type="text"
           placeholder="Name"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
         />
         <button type="submit">Add</button>
       </form>
